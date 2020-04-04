@@ -682,6 +682,26 @@ describe('RunContext', function() {
         });
     });
 
+    it('calls when with inquirer dummy prompt', function() {
+      const execSpy = sinon.spy();
+      this.Dummy.prototype.askFor = function() {
+        return this.prompt({
+          name: 'yeoman',
+          type: 'input',
+          filter: execSpy
+        }).then(answers => {
+          console.log(answers);
+        });
+      };
+
+      return this.ctx
+        .withPrompts({ yeoman: 'no please' })
+        .toPromise()
+        .then(function() {
+          sinon.assert.calledOnce(execSpy);
+        });
+    });
+
     it('throws on missing answer', function(done) {
       if (os.platform() === 'win32') {
         // Test passes on windows but coverage step fails.
