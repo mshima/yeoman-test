@@ -33,7 +33,7 @@ describe('RunContext', function() {
     process.chdir(__dirname);
     this.ctx.cleanTestDirectory();
 
-    if (this.ctx.completed) {
+    if (this.ctx.completed || this.ctx.errored) {
       done();
       return;
     }
@@ -679,6 +679,24 @@ describe('RunContext', function() {
           sinon.assert.calledOnce(promptSpy);
           assert.equal(promptSpy.getCall(0).args[0], 'no please');
           assert.ok(promptSpy.getCall(0).thisValue instanceof DummyPrompt);
+        });
+    });
+
+    it('throws on missing answer', function(done) {
+      this.Dummy.prototype.askFor = function() {
+        return this.prompt({
+          name: 'notFound',
+          type: 'input',
+          message: 'Hey!'
+        });
+      };
+
+      this.ctx
+        .withPrompts({ yeoman: 'no please' }, { throwOnMissingAnswer: true })
+        .toPromise()
+        .catch(error => {
+          assert.equal(error.message, 'Answer for notFound was not provided');
+          done();
         });
     });
   });

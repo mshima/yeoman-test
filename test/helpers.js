@@ -2,6 +2,7 @@
 var util = require('util');
 var path = require('path');
 var assert = require('assert');
+var os = require('os');
 var sinon = require('sinon');
 var RunContext = require('../lib/run-context');
 var yeoman = require('yeoman-environment');
@@ -155,6 +156,21 @@ describe('yeoman-test', function() {
       helpers.mockPrompt(generator, { foo: 2 });
       return generator.prompt({ message: 'bar', name: 'foo' }).then(function(answers) {
         assert.equal(answers.foo, 2);
+      });
+    });
+
+    it('throws if answer is not provided', function(done) {
+      if (os.platform() === 'win32') {
+        // Test passes on windows but coverage step fails.
+        // Workaround bug on nyc? mocha?
+        this.skip();
+      }
+
+      var generator = env.instantiate(helpers.createDummyGenerator());
+      helpers.mockPrompt(generator, { foo: 1 }, { throwOnMissingAnswer: true });
+      this.generator.prompt({ message: 'bar', name: 'notFound' }).catch(error => {
+        assert.equal(error.message, 'Answer for notFound was not provided');
+        done();
       });
     });
 
