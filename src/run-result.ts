@@ -2,7 +2,7 @@ import assert from 'node:assert';
 import { existsSync, readFileSync, rmSync } from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
-import { create as createMemFsEditor, type MemFsEditor } from 'mem-fs-editor';
+import { create as createMemFsEditor, type MemFsEditor, type MemFsEditorFile } from 'mem-fs-editor';
 
 import type { Store } from 'mem-fs';
 import type Environment from 'yeoman-environment';
@@ -48,7 +48,7 @@ export type RunResultOptions<GeneratorType extends Generator> = {
   /**
    * The file-system of the generator.
    */
-  memFs: Store;
+  memFs: Store<MemFsEditorFile>;
 
   fs?: MemFsEditor;
 
@@ -71,7 +71,7 @@ export default class RunResult<GeneratorType extends Generator = Generator> {
   generator: GeneratorType;
   cwd: string;
   oldCwd: string;
-  memFs: Store;
+  memFs: Store<MemFsEditorFile>;
   fs: MemFsEditor;
   mockedGenerators: any;
   options: RunResultOptions<GeneratorType>;
@@ -140,7 +140,6 @@ export default class RunResult<GeneratorType extends Generator = Generator> {
       this.memFs.each(file => {
         console.log(file.path);
         if (file.contents) {
-          // eslint-disable-next-line @typescript-eslint/no-base-to-string
           console.log(file.contents.toString('utf8'));
         }
       });

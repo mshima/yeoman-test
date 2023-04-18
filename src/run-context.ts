@@ -9,7 +9,7 @@ import tempDirectory from 'temp-dir';
 import type Generator from 'yeoman-generator';
 import type Environment from 'yeoman-environment';
 import { type LookupOptions, type Options } from 'yeoman-environment';
-import { create as createMemFsEditor, type MemFsEditor, type VinylMemFsEditorFile } from 'mem-fs-editor';
+import { create as createMemFsEditor, type MemFsEditor, type MemFsEditorFile } from 'mem-fs-editor';
 // eslint-disable-next-line n/file-extension-in-import
 import { resetFileCommitStates } from 'mem-fs-editor/state';
 import { create as createMemFs, type Store } from 'mem-fs';
@@ -65,7 +65,7 @@ export class RunContextBase<GeneratorType extends Generator = Generator> extends
   completed = false;
   targetDirectory?: string;
   editor!: MemFsEditor;
-  memFs: Store<VinylMemFsEditorFile>;
+  memFs: Store<MemFsEditorFile>;
   mockedGeneratorFactory: MockedGeneratorFactory;
 
   protected environmentPromise?: PromiseRunResult<GeneratorType>;
@@ -130,7 +130,7 @@ export class RunContextBase<GeneratorType extends Generator = Generator> extends
     }
 
     this.helpers = helpers;
-    this.memFs = (settings?.memFs as Store<VinylMemFsEditorFile>) ?? createMemFs();
+    this.memFs = (settings?.memFs as Store<MemFsEditorFile>) ?? createMemFs();
     this.mockedGeneratorFactory = this.helpers.createMockedGenerator as any;
   }
 
