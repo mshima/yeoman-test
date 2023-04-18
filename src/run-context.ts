@@ -635,7 +635,7 @@ export class RunContextBase<GeneratorType extends Generator = Generator> extends
     return {
       env: this.env,
       generator: this.generator,
-      memFs: this.env?.sharedFs ?? this.memFs,
+      memFs: (this.env?.sharedFs as Store<MemFsEditorFile>) ?? this.memFs,
       settings: {
         ...this.settings,
       },
