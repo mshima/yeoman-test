@@ -1,5 +1,5 @@
-import { mock } from 'node:test';
 import { TestAdapter as BaseTestAdapter, type TestAdapterOptions } from '@yeoman/adapter/testing';
+import { mock } from './mock-wrapper.js';
 
 export class TestAdapter extends BaseTestAdapter {
   constructor(options: TestAdapterOptions = {}) {

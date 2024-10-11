@@ -2,7 +2,6 @@ import assert from 'node:assert';
 import { existsSync, readFileSync, rmSync } from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
-import { type mock } from 'node:test';
 import type { Store } from 'mem-fs';
 import { type MemFsEditor, type MemFsEditorFile, create as createMemFsEditor } from 'mem-fs-editor';
 import type { BaseEnvironmentOptions, BaseGenerator, GetGeneratorConstructor } from '@yeoman/types';
@@ -10,6 +9,7 @@ import type { DefaultEnvironmentApi } from '../types/type-helpers.js';
 import { type RunContextSettings } from './run-context.js';
 import { type YeomanTest } from './helpers.js';
 import { type AskedQuestions } from './adapter.js';
+import { type MockTracker } from './mock-wrapper.js';
 
 const isObject = object => typeof object === 'object' && object !== null && object !== undefined;
 
@@ -127,7 +127,7 @@ export default class RunResult<GeneratorType extends BaseGenerator = BaseGenerat
       throw new Error('Spawn stub was not found');
     }
 
-    return (this.spawnStub as ReturnType<typeof mock.fn>).mock.calls.map(call => call.arguments);
+    return (this.spawnStub as ReturnType<MockTracker['fn']>).mock.calls.map(call => call.arguments);
   }
 
   /**
@@ -435,8 +435,8 @@ export default class RunResult<GeneratorType extends BaseGenerator = BaseGenerat
    * @param generator - the namespace of the mocked generator
    * @returns the generator mock
    */
-  getGeneratorMock(generator: string): ReturnType<typeof mock.fn>['mock'] {
-    const mockedGenerator: ReturnType<typeof mock.fn> = this.mockedGenerators[generator];
+  getGeneratorMock(generator: string): ReturnType<MockTracker['fn']>['mock'] {
+    const mockedGenerator: ReturnType<MockTracker['fn']> = this.mockedGenerators[generator];
     if (!mockedGenerator) {
       throw new Error(`Generator ${generator} is not mocked`);
     }

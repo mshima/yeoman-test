@@ -1,7 +1,6 @@
 import { existsSync, mkdirSync, rmSync } from 'node:fs';
 import { resolve } from 'node:path';
 import process from 'node:process';
-import { mock } from 'node:test';
 import { cloneDeep } from 'lodash-es';
 import type {
   BaseEnvironment,
@@ -17,6 +16,7 @@ import { type DummyPromptOptions, TestAdapter, type TestAdapterOptions } from '.
 import RunContext, { BasicRunContext, type RunContextSettings } from './run-context.js';
 import testContext from './test-context.js';
 import { createEnv as createEnvironment } from './default-environment.js';
+import { type MockTracker, mock } from './mock-wrapper.js';
 
 let GeneratorImplementation;
 try {
@@ -145,7 +145,7 @@ export class YeomanTest {
   /**
    * Create a mocked generator
    */
-  createMockedGenerator(GeneratorClass = GeneratorImplementation): ReturnType<typeof mock.fn> {
+  createMockedGenerator(GeneratorClass = GeneratorImplementation): ReturnType<MockTracker['fn']> {
     class MockedGenerator extends GeneratorClass {}
     const generator = mock.fn(MockedGenerator);
     for (const methodName of ['run', 'queueTasks', 'runWithOptions', 'queueOwnTasks']) {

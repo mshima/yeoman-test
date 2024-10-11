@@ -4,7 +4,6 @@ import path, { isAbsolute, join as pathJoin, resolve } from 'node:path';
 import assert from 'node:assert';
 import { EventEmitter } from 'node:events';
 import process from 'node:process';
-import { mock } from 'node:test';
 import { camelCase, kebabCase, merge as lodashMerge, set as lodashSet } from 'lodash-es';
 import { resetFileCommitStates } from 'mem-fs-editor/state';
 import { type Store, create as createMemFs } from 'mem-fs';
@@ -23,6 +22,7 @@ import RunResult, { type RunResultOptions } from './run-result.js';
 import defaultHelpers, { type CreateEnv as CreateEnvironment, type Dependency, type YeomanTest } from './helpers.js';
 import { type AskedQuestions, type DummyPromptCallback, type DummyPromptOptions, type TestAdapterOptions } from './adapter.js';
 import testContext from './test-context.js';
+import { type MockTracker, mock } from './mock-wrapper.js';
 
 /**
  * Provides settings for creating a `RunContext`.
@@ -417,7 +417,7 @@ export class RunContextBase<GeneratorType extends BaseGenerator = DefaultGenerat
     });
   }
 
-  withSpawnMock<StubType = ReturnType<typeof mock.fn>>(
+  withSpawnMock<StubType = ReturnType<MockTracker['fn']>>(
     options?:
       | ((...arguments_) => any)
       | {
